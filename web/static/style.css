@@ -1,0 +1,122 @@
+/* Shares the solvers' palette and type, so following a link off this page
+   does not feel like leaving it. */
+:root {
+  --bg: #10161c;
+  --panel: #182029;
+  --panel-2: #1f2933;
+  --line: #2b3742;
+  --text: #e6edf3;
+  --muted: #8b9aa8;
+  --accent: #3fb27f;
+  --accent-dim: #2c7a58;
+  --spade: #e6edf3;
+  --heart: #ff6b6b;
+  --diamond: #57a6ff;
+  --club: #4fd18b;
+  --font: Helvetica, "Helvetica Neue", Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 26px 16px 51px;
+  background: var(--bg);
+  color: var(--text);
+  font: 12px/1.5 var(--font);
+  /* The felt from the solvers' table, spread behind the whole page. */
+  background-image: radial-gradient(ellipse 90% 60% at 50% 0%,
+    rgba(63, 178, 127, 0.09), rgba(63, 178, 127, 0.02) 60%, transparent 100%);
+  background-repeat: no-repeat;
+}
+
+main {
+  max-width: 768px;
+  margin: 0 auto;
+  min-height: calc(100dvh - 77px);
+  display: flex;
+  flex-direction: column;
+}
+
+header { margin: 34px 0 22px; }
+h1 { margin: 0 0 10px; font-size: 30px; letter-spacing: -0.02em; }
+.blurb { margin: 0; max-width: 54ch; color: var(--muted); font-size: 13px; }
+
+.solvers { display: flex; flex-direction: column; gap: 13px; }
+
+.solver {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px;
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.15s, background 0.15s, transform 0.15s;
+}
+.solver:hover, .solver:focus-visible {
+  border-color: var(--accent-dim);
+  background: rgba(63, 178, 127, 0.07);
+  transform: translateY(-1px);
+  outline: none;
+}
+.solver:focus-visible { box-shadow: 0 0 0 2px rgba(63, 178, 127, 0.3); }
+
+.copy { flex: 1 1 auto; min-width: 0; }
+.copy h2 { margin: 0 0 5px; font-size: 16px; letter-spacing: -0.01em; }
+.copy p { margin: 0; color: var(--muted); }
+
+/* The hands fan the way a dealt hand does, and square up on hover. */
+.hand { flex: 0 0 auto; display: flex; }
+.card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  width: 42px; height: 56px;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font: 600 17px/1 var(--font);
+  transition: transform 0.15s;
+}
+.card + .card { margin-left: -6px; }
+.card:nth-child(1) { transform: rotate(-7deg); }
+.card:nth-child(2) { transform: rotate(0deg) translateY(-2px); }
+.card:nth-child(3) { transform: rotate(7deg); }
+.solver:hover .card, .solver:focus-visible .card {
+  transform: rotate(0deg) translateY(0);
+}
+.solver:hover .card + .card, .solver:focus-visible .card + .card {
+  margin-left: 4px;
+}
+.pip { font-size: 13px; }
+.card.suit-s { color: var(--spade); }
+.card.suit-h { color: var(--heart); }
+.card.suit-d { color: var(--diamond); }
+.card.suit-c { color: var(--club); }
+
+.go { flex: 0 0 auto; color: var(--muted); font-size: 17px; }
+.solver:hover .go, .solver:focus-visible .go { color: var(--accent); }
+
+footer { margin-top: auto; padding-top: 34px; }
+footer a { color: var(--muted); font-size: 11px; text-decoration: none; }
+footer a:hover { color: var(--accent); }
+
+@media (max-width: 560px) {
+  header { margin-top: 18px; }
+  h1 { font-size: 24px; }
+  .solver { gap: 14px; padding: 14px; }
+  /* The arrow only repeats what the whole row already says; the hand does not. */
+  .go { display: none; }
+  .card { width: 36px; height: 48px; font-size: 15px; }
+  .card + .card { margin-left: -5px; }
+  .pip { font-size: 11px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .solver, .card { transition: none; }
+  .solver:hover, .solver:focus-visible { transform: none; }
+}

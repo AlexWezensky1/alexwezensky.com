@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alex Wezensky</title>
+<meta name="description" content="Poker equity solvers by Alex Wezensky.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <header>
+    <h1>Alex Wezensky</h1>
+    <p class="blurb">
+      Poker equity solvers. Deal a hand from the deck and every seat's share of
+      the pot lands as the cards do &mdash; walked exactly when the runouts are
+      countable, sampled when they are not.
+    </p>
+  </header>
+
+  <nav class="solvers">
+    <a class="solver" href="/holdem/">
+      <div class="hand" aria-hidden="true">
+        <span class="card suit-s">A<span class="pip">&spades;</span></span>
+        <span class="card suit-h">K<span class="pip">&hearts;</span></span>
+      </div>
+      <div class="copy">
+        <h2>Texas Hold'em</h2>
+        <p>
+          Up to eight two-card hands and five community cards. Returns each
+          hand's chance to win, to chop, and its overall share of the pot.
+        </p>
+      </div>
+      <span class="go" aria-hidden="true">&rarr;</span>
+    </a>
+
+    <a class="solver" href="/hmrs/">
+      <div class="hand" aria-hidden="true">
+        <span class="card suit-d">Q<span class="pip">&diams;</span></span>
+        <span class="card suit-c">Q<span class="pip">&clubs;</span></span>
+        <span class="card suit-s">J<span class="pip">&spades;</span></span>
+      </div>
+      <div class="copy">
+        <h2>HMRS</h2>
+        <p>
+          Five-card hands against ten community cards, where a matching rank
+          discards face up. Returns equity, plus how often a hand scoops,
+          empties out, or keeps all five.
+        </p>
+      </div>
+      <span class="go" aria-hidden="true">&rarr;</span>
+    </a>
+  </nav>
+
+  <footer>
+    <a href="https://github.com/AlexWezensky1/Poker-Solvers">Source on GitHub</a>
+  </footer>
+</main>
+</body>
+</html>
