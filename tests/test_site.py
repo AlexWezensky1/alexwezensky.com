@@ -86,11 +86,12 @@ HOLDEM_PORT = free_port()
 DEAD_PORT = free_port()  # nothing is ever bound here, so connecting fails
 
 os.environ["HOLDEM_UPSTREAM"] = "http://127.0.0.1:%d" % HOLDEM_PORT
-os.environ["HMRS_UPSTREAM"] = "http://127.0.0.1:%d" % DEAD_PORT
+os.environ["HMRDS_UPSTREAM"] = "http://127.0.0.1:%d" % DEAD_PORT
 
 from fastapi.testclient import TestClient  # noqa: E402
 
 from web import app as site  # noqa: E402  (imported after the env is set)
+from web.app import local_location  # noqa: E402
 
 server = uvicorn.Server(uvicorn.Config(UPSTREAM, host="127.0.0.1",
                                        port=HOLDEM_PORT, log_level="error"))
@@ -127,7 +128,7 @@ class LandingPage(ProxyCase):
     def test_index_links_to_both_solvers(self):
         body = self.client.get("/").text
         self.assertIn('href="/holdem/"', body)
-        self.assertIn('href="/hmrs/"', body)
+        self.assertIn('href="/hmrds/"', body)
 
     def test_static_assets_are_served(self):
         for name, kind in [("style.css", "text/css"), ("favicon.svg", "image/svg")]:
@@ -140,7 +141,7 @@ class LandingPage(ProxyCase):
         response = self.client.get("/api/health")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["status"], "ok")
-        self.assertEqual(response.json()["upstreams"], {"holdem": True, "hmrs": True})
+        self.assertEqual(response.json()["upstreams"], {"holdem": True, "hmrds": True})
 
     def test_an_unknown_path_is_not_swallowed_by_the_proxy(self):
         self.assertEqual(self.client.get("/nope").status_code, 404)
@@ -217,17 +218,51 @@ class Proxying(ProxyCase):
                          len(response.content))
 
 
+class RewritingRedirects(unittest.TestCase):
+    """`local_location` in isolation, including the schemes a real hop mixes."""
+
+    target = "https://solver.up.railway.app"
+
+    def test_a_relative_location_is_left_alone(self):
+        self.assertEqual(local_location("/holdem/", self.target), "/holdem/")
+
+    def test_the_upstream_host_is_stripped(self):
+        self.assertEqual(
+            local_location("https://solver.up.railway.app/holdem/", self.target),
+            "/holdem/")
+
+    def test_a_mismatched_scheme_is_still_stripped(self):
+        """The upstream answers http when the hop in was plain, https when it
+        was not; either way the address is the one we must not hand back."""
+        self.assertEqual(
+            local_location("http://solver.up.railway.app/holdem/", self.target),
+            "/holdem/")
+
+    def test_a_query_string_survives_the_strip(self):
+        self.assertEqual(
+            local_location("http://solver.up.railway.app/a?b=c", self.target),
+            "/a?b=c")
+
+    def test_the_bare_upstream_becomes_our_root(self):
+        self.assertEqual(local_location("https://solver.up.railway.app", self.target),
+                         "/")
+
+    def test_somewhere_else_entirely_is_left_alone(self):
+        other = "https://example.com/elsewhere"
+        self.assertEqual(local_location(other, self.target), other)
+
+
 class WhenAnUpstreamIsMissing(ProxyCase):
     def test_an_unreachable_solver_answers_502(self):
-        response = self.client.get("/hmrs/api/health")
+        response = self.client.get("/hmrds/api/health")
         self.assertEqual(response.status_code, 502)
         self.assertIn("unreachable", response.json()["detail"])
 
     def test_an_unconfigured_solver_answers_503(self):
-        site.UPSTREAMS["hmrs"] = ""
-        self.addCleanup(site.UPSTREAMS.__setitem__, "hmrs",
-                        os.environ["HMRS_UPSTREAM"])
-        response = self.client.get("/hmrs/api/health")
+        site.UPSTREAMS["hmrds"] = ""
+        self.addCleanup(site.UPSTREAMS.__setitem__, "hmrds",
+                        os.environ["HMRDS_UPSTREAM"])
+        response = self.client.get("/hmrds/api/health")
         self.assertEqual(response.status_code, 503)
         self.assertIn("not configured", response.json()["detail"])
 

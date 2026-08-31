@@ -3,7 +3,7 @@
 Serves the landing page from ``web/static`` and stands in front of the two
 solvers, which run as their own services. Railway points one domain at one
 service, so anything else sharing that domain has to be forwarded by hand:
-a request under ``/holdem`` or ``/hmrs`` is replayed against the matching
+a request under ``/holdem`` or ``/hmrds`` is replayed against the matching
 service and its answer handed straight back. Both solvers already mount
 themselves under exactly those prefixes, so the path a browser asks for is
 the path the upstream is asked for -- nothing is rewritten in between.
@@ -12,7 +12,7 @@ the path the upstream is asked for -- nothing is rewritten in between.
 import os
 from contextlib import asynccontextmanager
 from pathlib import Path
-from urllib.parse import urlsplit
+from urllib.parse import urlsplit, urlunsplit
 
 import httpx
 from fastapi import FastAPI, Request
@@ -26,7 +26,7 @@ STATIC_DIR = Path(__file__).resolve().parent / "static"
 #: routes, it just answers 503 instead of leaving a dead link on the page.
 UPSTREAMS = {
     "holdem": os.environ.get("HOLDEM_UPSTREAM", "").rstrip("/"),
-    "hmrs": os.environ.get("HMRS_UPSTREAM", "").rstrip("/"),
+    "hmrds": os.environ.get("HMRDS_UPSTREAM", "").rstrip("/"),
 }
 
 METHODS = ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
@@ -72,9 +72,15 @@ def local_location(location: str, target: str) -> str:
     both sides match. An absolute one carries the upstream's address, which a
     browser cannot follow to a solver that has no domain of its own -- so only
     the path survives.
+
+    Only the host is compared. The scheme is no use for telling the two apart:
+    the upstream builds its redirects from the x-forwarded-proto it was handed,
+    so the same address comes back as http over a plain hop and https over a
+    real one, and a prefix match would quietly miss half the time.
     """
-    if location.startswith(target):
-        return location[len(target):] or "/"
+    parsed = urlsplit(location)
+    if parsed.netloc and parsed.netloc == urlsplit(target).netloc:
+        return urlunsplit(("", "", parsed.path, parsed.query, parsed.fragment)) or "/"
     return location
 
 
