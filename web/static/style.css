@@ -1,5 +1,27 @@
 /* Shares the solvers' palette and type, so following a link off this page
    does not feel like leaving it. */
+/* TeX Gyre Heros, a Helvetica built from URW's Nimbus Sans and released under
+   the GUST Font License (fonts/GUST-FONT-LICENSE.txt). Naming Helvetica in a
+   font stack is not enough: Windows does not ship it, so the stack fell through
+   to Arial, whose a, t, C and R are drawn differently. Shipping the font is the
+   only way the page looks the same on every machine. */
+@font-face {
+  font-family: "TeX Gyre Heros";
+  src: url("fonts/texgyreheros-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "TeX Gyre Heros";
+  src: url("fonts/texgyreheros-bold.woff2") format("woff2");
+  /* The page asks for 600 in places; spanning the range stops the browser
+     smearing a synthetic bold over the real one. */
+  font-weight: 600 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --bg: #10161c;
   --panel: #182029;
@@ -13,7 +35,7 @@
   --heart: #ff6b6b;
   --diamond: #57a6ff;
   --club: #4fd18b;
-  --font: Helvetica, "Helvetica Neue", Arial, sans-serif;
+  --font: "TeX Gyre Heros", Helvetica, "Helvetica Neue", Arial, sans-serif;
 }
 
 * { box-sizing: border-box; }
