@@ -27,6 +27,8 @@ STATIC_DIR = Path(__file__).resolve().parent / "static"
 UPSTREAMS = {
     "holdem": os.environ.get("HOLDEM_UPSTREAM", "").rstrip("/"),
     "hmrds": os.environ.get("HMRDS_UPSTREAM", "").rstrip("/"),
+    "noah": os.environ.get("NOAH_UPSTREAM", "").rstrip("/"),
+    "redriver": os.environ.get("REDRIVER_UPSTREAM", "").rstrip("/"),
 }
 
 METHODS = ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]

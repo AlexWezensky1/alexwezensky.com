@@ -125,10 +125,10 @@ class LandingPage(ProxyCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("Alex Wezensky", response.text)
 
-    def test_index_links_to_both_solvers(self):
+    def test_index_links_to_every_solver(self):
         body = self.client.get("/").text
-        self.assertIn('href="/holdem/"', body)
-        self.assertIn('href="/hmrds/"', body)
+        for prefix in ("holdem", "noah", "redriver", "hmrds"):
+            self.assertIn('href="/%s/"' % prefix, body)
 
     def test_static_assets_are_served(self):
         for name, kind in [("style.css", "text/css"), ("favicon.svg", "image/svg")]:
@@ -141,7 +141,9 @@ class LandingPage(ProxyCase):
         response = self.client.get("/api/health")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["status"], "ok")
-        self.assertEqual(response.json()["upstreams"], {"holdem": True, "hmrds": True})
+        self.assertEqual(response.json()["upstreams"],
+                         {"holdem": True, "hmrds": True,
+                          "noah": False, "redriver": False})
 
     def test_an_unknown_path_is_not_swallowed_by_the_proxy(self):
         self.assertEqual(self.client.get("/nope").status_code, 404)
