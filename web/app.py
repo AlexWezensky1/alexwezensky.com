@@ -16,7 +16,7 @@ from urllib.parse import urlsplit, urlunsplit
 
 import httpx
 from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse, Response
+from fastapi.responses import FileResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 
 STATIC_DIR = Path(__file__).resolve().parent / "static"
@@ -136,4 +136,11 @@ for _name in UPSTREAMS:
 
 
 # Mounted last so the routes above win; ``html=True`` serves index.html at /.
+@app.get("/changelog", include_in_schema=False)
+def changelog():
+    """A page of its own without a trailing slash; the static mount
+    would not resolve either without one."""
+    return FileResponse(STATIC_DIR / "changelog.html")
+
+
 app.mount("/", StaticFiles(directory=STATIC_DIR, html=True), name="static")

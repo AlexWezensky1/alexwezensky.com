@@ -126,7 +126,20 @@ h1 { margin: 0 0 10px; font-size: 30px; letter-spacing: -0.02em; }
 
 /* The one thing at the foot of the page, so it sits under the solvers rather
    than beside them. */
-footer { margin-top: 34px; display: flex; }
+footer { margin-top: 34px; display: flex; align-items: center; gap: 20px; }
+.changelog-link {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 4px 6px;
+  border-radius: 4px;
+  transition: color 0.15s;
+}
+.changelog-link:hover, .changelog-link:focus-visible {
+  color: var(--accent); outline: none;
+}
 .linkedin {
   color: var(--muted);
   display: inline-flex;
