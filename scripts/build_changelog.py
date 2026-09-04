@@ -52,20 +52,42 @@ def commits(repo):
         }
 
 
+def collapse(entries):
+    """One line a day for a subject that was said more than once.
+
+    Nine commits named "Update README.md" landed on a single day early on.
+    Listed in full they read as nine changes when they were one afternoon of
+    edits, and they crowd out everything else that day. The first of a subject
+    on a given day is kept and the repeats are dropped.
+    """
+    seen = set()
+    kept = []
+    for entry in entries:
+        key = (entry["date"], entry["subject"])
+        if key in seen:
+            continue
+        seen.add(key)
+        kept.append(entry)
+    return kept
+
+
 def main():
     repo = Path(sys.argv[1] if len(sys.argv) > 1 else DEFAULT_REPO)
     if not (repo / ".git").exists():
         print("no repo at", repo, file=sys.stderr)
         sys.exit(1)
 
-    entries = list(commits(repo))
+    walked = list(commits(repo))
+    entries = collapse(walked)
+    folded = len(walked) - len(entries)
     output = HERE / "web" / "static" / "changelog.json"
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(
         {"repo": "Poker-Solvers", "entries": entries},
         indent=2,
     ))
-    print("wrote %d entries to %s" % (len(entries), output))
+    note = " (%d repeats folded away)" % folded if folded else ""
+    print("wrote %d entries to %s%s" % (len(entries), output, note))
 
 
 if __name__ == "__main__":

@@ -2,6 +2,16 @@
   "repo": "Poker-Solvers",
   "entries": [
     {
+      "hash": "4ce8b48",
+      "date": "2026-09-04",
+      "subject": "Chart HMRDS by the highest card each side holds"
+    },
+    {
+      "hash": "3bcba60",
+      "date": "2026-09-04",
+      "subject": "Ship the finished preflop chart"
+    },
+    {
       "hash": "da5f04b",
       "date": "2026-09-03",
       "subject": "Keep the showdown row on one line at every width"
@@ -227,21 +237,6 @@
       "subject": "Update README.md"
     },
     {
-      "hash": "fe052ef",
-      "date": "2025-07-18",
-      "subject": "Update README.md"
-    },
-    {
-      "hash": "039cdd3",
-      "date": "2025-07-18",
-      "subject": "Update README.md"
-    },
-    {
-      "hash": "1433c2f",
-      "date": "2025-07-18",
-      "subject": "Update README.md"
-    },
-    {
       "hash": "9d55c77",
       "date": "2025-07-18",
       "subject": "Adding debug options and files"
@@ -255,31 +250,6 @@
       "hash": "b2a6776",
       "date": "2025-07-18",
       "subject": "Copying some useful features from Baccarat"
-    },
-    {
-      "hash": "d80e50c",
-      "date": "2025-07-18",
-      "subject": "Update README.md"
-    },
-    {
-      "hash": "ed5c15f",
-      "date": "2025-07-18",
-      "subject": "Update README.md"
-    },
-    {
-      "hash": "3183c2b",
-      "date": "2025-07-18",
-      "subject": "Update README.md"
-    },
-    {
-      "hash": "e346037",
-      "date": "2025-07-18",
-      "subject": "Update README.md"
-    },
-    {
-      "hash": "ce00be2",
-      "date": "2025-07-18",
-      "subject": "Update README.md"
     },
     {
       "hash": "ab49b8f",
