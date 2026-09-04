@@ -2,304 +2,289 @@
   "repo": "Poker-Solvers",
   "entries": [
     {
+      "hash": "da5f04b",
+      "date": "2026-09-03",
+      "subject": "Keep the showdown row on one line at every width"
+    },
+    {
+      "hash": "bc5d03b",
+      "date": "2026-09-03",
+      "subject": "Let a seat keep its own height, and pair the figures again"
+    },
+    {
+      "hash": "bd8553c",
+      "date": "2026-09-03",
+      "subject": "Stack the showdown table, and reach two seats a row sooner"
+    },
+    {
+      "hash": "18f7bbf",
+      "date": "2026-09-03",
+      "subject": "Name the column after the game it belongs to"
+    },
+    {
+      "hash": "19cf96a",
+      "date": "2026-09-03",
+      "subject": "Keep the half-walked chart out of the repository"
+    },
+    {
+      "hash": "701d6ee",
+      "date": "2026-09-03",
+      "subject": "Read the variants against Hold'em, and scope the chart link to Hold'em"
+    },
+    {
+      "hash": "1d05a27",
+      "date": "2026-09-03",
+      "subject": "Preflop chart for Hold'em"
+    },
+    {
       "hash": "8a323ec",
       "date": "2026-09-03",
-      "subject": "Sit the math on a line of its own",
-      "body": "The exhaustive formula wraps naturally at the boundaries between what\nwas multiplied, so on a narrow column it ended up spilling three lines\ndeep and pulled the deck along with it. It sits under the count now,\nwhich is where it was going to wrap to anyway. Column widths are\npinned, so a longer line stays inside its column rather than shifting\nthe one beside it."
+      "subject": "Sit the math on a line of its own"
     },
     {
       "hash": "16c3819",
       "date": "2026-09-03",
-      "subject": "Let the other three games fold, and spell out the walk",
-      "body": "Fold and dead cards move out of HMRDS. Every game now takes a `dead`\npile through the API -- cards out of the deck but belonging to nobody\nstill in the pot, so they are not scored and take no share, and nothing\nunknown can be dealt them either. The URL carries it the same way HMRDS\ndid, one `dead` entry per folded hand rather than a loose pile, which is\nwhat lets the cards go back into the seat they came out of.\n\nAlongside that, the status line says how the answer came out. When the\nwalk covers every runout, it labels itself exhaustive and spells out\nwhat it multiplied to get there:\n\n  990 exhaustive runouts (45 \u00d7 44 \u00f7 2) in 0.002 seconds\n\nA community card is a combination, not a sequence -- the order the flop\ncomes out in does not matter -- so the ascending product is divided by\nthe arrangements. The count itself is unchanged and still the truth of\nwhat the answer is built from."
+      "subject": "Let the other three games fold, and spell out the walk"
     },
     {
       "hash": "a0d129d",
       "date": "2026-09-02",
-      "subject": "Put the table in the address bar",
-      "body": "Every spot now has a URL of its own and comes back from it:\n\n  /holdem/?ranges=KcQc&ranges=Jc6c&board=8h7c2hAd9s\n\nOne `ranges` a hand, in seat order, and the board as one run of cards.\nHMRDS adds `dead`, one entry per folded hand rather than a loose pile of\ncards, which is what lets those cards go back into the seat they came\nout of; and a hand checked in but not yet dealt travels as an empty\n`ranges`, since five unknown cards is a real state there and counts\nagainst everybody else.\n\nThe address bar is written on every change with replaceState, so dealing\na card is not a page the back button has to walk back through. It is\nalso the one input here somebody else may have written, so cards that\nare not cards are dropped and the URL rewrites itself to what was\nactually understood: ?ranges=ZZ99&board=Jh__Ts!!2c comes back as\n?board=JhTs2c rather than as an error."
+      "subject": "Put the table in the address bar"
     },
     {
       "hash": "722656a",
       "date": "2026-09-02",
-      "subject": "Lay the seats out as a list rather than a ring",
-      "body": "The ring needed a height settled before anything was dealt: a table with\na fixed aspect ratio, three rows of it, seats pinned to the cells around\nthe middle one. A board that can run to seven rows has no such height,\nso it grew past the box it was given and the seats below went with it --\noff the bottom of a page that never got any taller to scroll to them.\n\nThe board sits above the seats now and the seats flow as a grid, which\nis the shape the narrow screens were already using. All three, since all\nthree had the ring.\n\nThat takes the wide screen block with it, and it is worth naming what\nwas in there: body height 100dvh with overflow hidden, and every card\nsized in cqw against the table as a container. The first is what made\nthe page unscrollable, and the second is why the cards came out two\npixels wide the moment the table stopped having a width of its own."
+      "subject": "Lay the seats out as a list rather than a ring"
     },
     {
       "hash": "a7fa60d",
       "date": "2026-09-02",
-      "subject": "Empty a seat that is checked out of the hand",
-      "body": "Its cards were released back to the deck but left sitting in the slots,\ngreyed out, which read as a hand still holding something. They are\ncleared now, so checking a seat out says plainly that it was never dealt\nin -- and checking it back in gives empty slots to deal into.\n\nFolding is the other case and is untouched: those cards stay where they\nare and stay out of the deck. Checking a folded seat out clears it and\nputs the fold button back, since a hand that was never dealt cannot have\nfolded either.\n\nWith unchecked seats emptied at the source there is nothing for a\nseparate list of live slots to leave out, so the deck counts them all\nagain."
+      "subject": "Empty a seat that is checked out of the hand"
     },
     {
       "hash": "5465a77",
       "date": "2026-09-02",
-      "subject": "Show the board rows the hand has reached, and drop the frame",
-      "body": "Red River keeps thirty one slots because the river can run that far, but\nalmost every board stops in the first five. The rest stay out of the way\nnow: a row appears once the row before it is full, and stays for as long\nas it holds a card. Clearing the table folds it back to one. A slot in a\nrow that is not out cannot be dealt into either, so the next card never\nlands somewhere nobody can see.\n\nThe panel round the ring goes as well, on all three. The seats are boxes\nand the felt is a box; a border drawn round the lot of them was a third\nframe saying what the first two already did."
+      "subject": "Show the board rows the hand has reached, and drop the frame"
     },
     {
       "hash": "af5bd1d",
       "date": "2026-09-01",
-      "subject": "Make room on the board for every red card in the deck",
-      "body": "Five to a row, and enough rows to hold the longest board the game can\ndeal. That is 31, not 30: getting all 26 reds onto the river means none\nwere spent anywhere else, so the flop, the turn and every hole card were\nblack, and then a black one has to end it. 3 + 1 + 26 + 1. There are\nblacks left over to finish on whether two are playing or eight, so it is\na real ceiling rather than a rail, and the engine takes it as one. The\nlast row holds that final card on its own.\n\nA board that long turned up a bug in the evaluator. The flush test adds\nthree to each four-bit suit count and reads the top bit, which works\nwhile no count passes twelve -- at thirteen it carries into the next\nsuit and the flush is lost. Thirteen spades and four diamonds scored as\na high card while holding a royal flush. Reading the counts directly as\nwell catches it, and costs nothing: a false positive falls through to\nthe ranks anyway. Seven and eight card hands could never reach it, but\nthe fix is in all three.\n\nThe felt is rounded rather than an oval now. Half of a box seven rows\ntall is a pointed arch, which is not what a table looks like."
+      "subject": "Make room on the board for every red card in the deck"
     },
     {
       "hash": "e1b1552",
       "date": "2026-09-01",
-      "subject": "Stack Red River's board a street at a time",
-      "body": "Four rows: the flop, the turn just under it, then the river four to a\nrow for as long as it ran. Every row centred on the one above.\n\nFive to a row grouped the cards by nothing in particular -- the sixth\ncard of a board is the second card of the river, and putting it beside\nthe fifth said otherwise. The turn keeps a tighter gap than the rest, so\nit reads as belonging to the flop rather than opening the river."
+      "subject": "Stack Red River's board a street at a time"
     },
     {
       "hash": "4df559f",
       "date": "2026-09-01",
-      "subject": "Let a hand fold without giving its cards back",
-      "body": "Unchecking a seat says it was never dealt in, so its cards go back to the\ndeck for everybody else. Folding is the other thing: the hand is out of\nthe pot but the cards it was holding are gone, and nobody can be dealt\nthem. Both now exist, and the checkbox is untouched.\n\nThat needed somewhere to put cards belonging to nobody still playing, so\nequity takes a dead pile. It is not scored and takes no share, but it\ncomes off the deck before anything unknown is dealt out of it -- which\nis the whole reason for naming those cards. Folding five hearts moves a\ntwo hand pot from 63.5/36.5 to 64.0/36.0, and that gap is the point."
+      "subject": "Let a hand fold without giving its cards back"
     },
     {
       "hash": "206256b",
       "date": "2026-09-01",
-      "subject": "Call it showdown, and fold Red River's board in half",
-      "body": "The list is what a hand ends as, which is the showdown rather than the\nriver -- and on Red River the river is several cards, so naming it that\nwas wrong twice over. The categories are titled rather than written out\nmid-sentence, so they read as the labels they are.\n\nRed River's board also comes down to five slots a row. Ten in a line sat\nin the middle column of the ring and set its width, leaving the two\nseats above and below it more than twice the width of the rest; the\nspread across the eight is 39px now rather than 408."
+      "subject": "Call it showdown, and fold Red River's board in half"
     },
     {
       "hash": "c49723c",
       "date": "2026-09-01",
-      "subject": "Add Noah's Ark and Red River, and say what each hand becomes",
-      "body": "Two more variants, both Hold'em with a different board, so both reuse\nits evaluator.\n\nNoah's Ark turns two community cards a street instead of one: six out by\nthe river, best five of eight. Six cards flatten the game -- aces over\nkings is 78% here rather than 82%, and queens against ace-king is nearer\neven than the usual 54/46.\n\nRed River is the awkward one. Its river keeps coming: a red card is\nfollowed by another until a black one ends the hand, so the board\nfinishes at five cards or six or seven and its runouts are sequences\nrather than combinations. Each red that lands opens the deck again, so\nthe count grows factorially while the probability only halves -- which\nis why the walk is only on offer once the board has actually finished,\nand why both speeds sample before then. The status line says which.\n\nEvery solver now folds out what a hand turns into by the end, royal\nflush down to high card, counted over every runout so the column sums to\n100%.\n\nThat last part turned up a bug in the evaluator that Hold'em could never\nhave hit. Holding a flush was taken to settle the hand, but the same\ncards can make a full house that beats it -- seven cards can never do\nboth at once, and eight can: 8d 4s 6s 8h 5s 9s 6c 8s is a nine-high\nflush and eights full of sixes. Scoring the ranks as well and keeping\nthe better of the two fixes it, in all three. The flush branch also only\never scored the longest suit, which stops being the best one once a\nboard is long enough to carry two of them."
+      "subject": "Add Noah's Ark and Red River, and say what each hand becomes"
     },
     {
       "hash": "702a510",
       "date": "2026-09-01",
-      "subject": "Stop a tapped slot pulling the page in, and deal a hand as it joins",
-      "body": "Safari on iOS zooms in on any focused control whose text is under 16px,\nand a card slot is 11, so taking a card back off the table zoomed the\npage into that hand. The tap no longer hands the slot focus -- the\ndefault on mousedown is blocked -- which is what the zoom was following.\nThe click still lands, and Tab still focuses a slot the ordinary way, so\nthe focus listener that arms it keeps working. Hold'em had the same.\n\nChecking a hand in now arms its first empty slot, since checking it in is\nasking to deal it. Checking one out goes back to the front of the order,\nbut to a slot that is free: it used to arm the first slot outright, so\nthe next card landed on top of whatever was already sitting there."
+      "subject": "Stop a tapped slot pulling the page in, and deal a hand as it joins"
     },
     {
       "hash": "1d16e08",
       "date": "2026-09-01",
-      "subject": "Fit two hands across a phone, and stop chasing the slot being filled",
-      "body": "A seat holds five cards, so at the sizes the page used only one column of\nthem fitted a phone and the table ran on for screens. Cards, gaps and\npadding all come down together below 620px until two columns sit side by\nside, and again below 400px; the deck and board come with them.\n\nArming a slot also focused it, and the browser then dragged that slot\ninto view -- so dealing a card scrolled the deck you were dealing from\noff the screen. Arming is a paint job, and the slots are readOnly, so it\nno longer touches the caret. Tapping a slot still focuses it the ordinary\nway, which is what the focus listener needs to keep Tab working.\n\nTwo things found on the way: the seats nobody had checked were not being\nshut until the first card was dealt, because refresh() never ran on load;\nand Clear stood 5px taller than the pair above it."
+      "subject": "Fit two hands across a phone, and stop chasing the slot being filled"
     },
     {
       "hash": "0e2c533",
       "date": "2026-09-01",
-      "subject": "Give Hold'em the same typeface, and a way between the two",
-      "body": "Hold'em was still asking for Helvetica and getting Arial on Windows, so\nit carries TeX Gyre Heros and the spade now too, and the three pages\nfinally look like one site.\n\nEach solver also links to the other and back to the front, out at the end\nof the title line. The hrefs are root relative, so they resolve against\nwhatever domain the page is being served from -- which on alexwezensky.com\nis the proxy that puts all three behind one name."
+      "subject": "Give Hold'em the same typeface, and a way between the two"
     },
     {
       "hash": "266d8c3",
       "date": "2026-09-01",
-      "subject": "Ship the typeface rather than asking for it",
-      "body": "Naming Helvetica in a font stack does nothing on a machine that has not\ngot it, and Windows has not: the stack fell through to Arial, whose a\ncarries a tail, whose t is cut on the slant, and whose Q and R finish\ndifferently. The page now carries TeX Gyre Heros, a Helvetica drawn from\nURW's Nimbus Sans, so the letters are the same everywhere. Nimbus Sans\nitself is AGPL and only exempted for PostScript and PDF, which a website\nis not; Heros is under the GUST Font License, which is kept beside it.\n\nAlso: a spade on green for the tab, Out and Keep now sit above Scoop,\nthe legend loses its dash and calls the seats hands, and the status line\nopens with a capital."
+      "subject": "Ship the typeface rather than asking for it"
     },
     {
       "hash": "ce6601e",
       "date": "2026-09-01",
-      "subject": "Walk the unnamed cards, and say who is in the pot",
-      "body": "The exact walk used to refuse a table with cards nobody had named. It\ncan walk those too: each way of filling them in is a table with every\nhand named, so it is the ordinary walk, and since suits are invisible to\nevery rule the fillings collapse from card combinations to rank\nmultisets -- 46,376 ways to deal four unknown cards are 486 walks. That\nruns in 10.7s against the 15s the same table took to sample, and answers\nexactly rather than closely. Past a thousand fillings there are too many\nto beat sampling, so it samples and says so instead of refusing.\n\nAlongside it, seats say whether they are playing. Seat 1 is whoever is\nasking and is fixed on; the rest are checked in and out, and a seat that\nis out gives its cards back to the deck and drops out of the order deck\nclicks fill in. A checked seat needs no cards at all -- whatever it has\nnot been given is unknown, dealt out of the ranks the board has not\nturned, which is to say it has discarded nothing. So four community\ncards and two checked seats is enough to solve from.\n\nThe divider between Fast and Precise no longer went missing when Precise\nwas the half selected: the two overlap by a pixel now, rather than one\nof them going without a border and hoping its neighbour drew one."
+      "subject": "Walk the unnamed cards, and say who is in the pot"
     },
     {
       "hash": "79d5c45",
       "date": "2026-08-31",
-      "subject": "Pin the deck and the column beside it",
-      "body": "The status line set the width of the column it sat in, and the deck took\nwhatever was left, so a longer run of text pulled the column wider and\nshuffled the deck along under it. Lengthening one message was enough to\nmove every card on the page.\n\nBoth are given their widths outright -- 470 and 254, which with the gap\nis the panel's inner width. A long status now wraps inside its own\ncolumn and nothing beside it moves. That also retires the invisible\nsizer span, which existed only to hold the column open."
+      "subject": "Pin the deck and the column beside it"
     },
     {
       "hash": "baf738c",
       "date": "2026-08-31",
-      "subject": "Sample four times as hard when Precise cannot walk",
-      "body": "The exact walk cannot deal cards nobody has named -- every way of\nfilling them in is a different set of live ranks, so each would need its\nown walk and none of the work carries over. Precise used to answer those\ntables with a red error.\n\nIt samples them instead, at a million runouts rather than Fast's quarter\nmillion. Error falls with the root of the trial count, so that halves\nit: the spread across seeds drops from 0.06 to 0.02 of a percentage\npoint, which is what it takes for the last displayed digit to hold\nstill. It costs about fifteen seconds, which is why only Precise asks\nfor it.\n\nThe status says which it did, so the button does not look ignored."
+      "subject": "Sample four times as hard when Precise cannot walk"
     },
     {
       "hash": "2a8aea3",
       "date": "2026-08-31",
-      "subject": "Let Fast walk the cheap tables, and let the legend breathe",
-      "body": "Fast asked for monte-carlo outright, so a settled board was sampled\n250,000 times over the two seconds it took, when walking its single\nrunout is exact and instant. It asks for auto now: the walk when the\nwalk is affordable, sampling when it is not.\n\nThe legend loses its heading, and gains the same gap above it that the\npanels have between them -- the seats are a bare grid, so there was no\nmargin there to inherit."
+      "subject": "Let Fast walk the cheap tables, and let the legend breathe"
     },
     {
       "hash": "2e8a781",
       "date": "2026-08-31",
-      "subject": "List a pair as two cards, and put the speed control back",
-      "body": "A finished hand was read off the rank mask, which carries one bit per\nrank, so a pair came out as a single card: two jacks printed as \"J (20)\"\nand the listing did not account for the total beside it. describe now\ntakes the seat's own cards and prints one entry each, \"J J (20)\".\n\nAlongside that, on the page itself:\n\n- Fast and Precise sit above Clear. Fast samples a fixed 250,000\n  runouts whatever the table holds; Precise walks every one of them.\n- Every figure reads to one decimal place. Equity and Scoop were the\n  odd ones at two, which made the same number look like two different\n  ones -- an out and a scoop that are always the same runout showed as\n  3.0% and 3.03%.\n- The stats are spelled out at the foot of the page, which is where the\n  instructions used to be at the top."
+      "subject": "List a pair as two cards, and put the speed control back"
     },
     {
       "hash": "6bf93f1",
       "date": "2026-08-31",
-      "subject": "Deal your own hand before the flop, not after everyone else's",
-      "body": "Filling ran straight down the layout -- all ten community cards, then\nevery seat -- so entering a real spot meant clicking past six board\nslots that are not known yet to reach hand 1.\n\nClicks now travel in the order the table becomes known to somebody\nsitting at it: your five, the four community cards that open the game,\nthen the other seats, with the later streets last. That is not the\ndealing order, since everybody is dealt before any community card is,\nbut it is the order the cards get entered in.\n\nThe layout is untouched; fill order is its own list now."
+      "subject": "Deal your own hand before the flop, not after everyone else's"
     },
     {
       "hash": "5e0a106",
       "date": "2026-08-31",
-      "subject": "Show dealt cards with their suit pip",
-      "body": "Slots read A\u2660 rather than As, matching the deck they are dealt from.\n\nThe slot value was doubling as the card itself, so the pretty version\ncould not simply be written into it. The canonical card now rides in a\ndata attribute and cardOf/setCard are the only two places that know the\ndifference; validation, duplicate checks and the request payload go on\nworking in As. The pip is a symbol rather than a word, so the slot's\naria-label carries the plain card instead."
+      "subject": "Show dealt cards with their suit pip"
     },
     {
       "hash": "805f1c9",
       "date": "2026-08-31",
-      "subject": "Split equity into its high and low halves, and show suits as pips",
-      "body": "Each seat now reports the share it takes of each half, ties included.\nA pot won outright is never cut in two, so those runouts count towards\nneither half -- the gap between the two columns and 100% is how often the\nhand ended before it ever reached a showdown.\n\nCard slots show a suit pip rather than a letter, so a slot reads A-spade\nthe way the deck above it does. The card code lives on the element and\neverything downstream still speaks 'As'.\n\nDealing now runs community cards first and then each seat in turn, which\nis the order a hand actually arrives in, and the default sample is\n250,000 runouts -- about 0.06% either way, at roughly three seconds."
+      "subject": "Split equity into its high and low halves, and show suits as pips"
     },
     {
       "hash": "1e7f4fd",
       "date": "2026-08-31",
-      "subject": "Rename HMRS to HMRDS",
-      "body": "The package, the URLs it serves under, the CLI entry point and every\nmention in the docs. The project directory keeps its full name."
+      "subject": "Rename HMRS to HMRDS"
     },
     {
       "hash": "3c382cd",
       "date": "2026-08-31",
-      "subject": "Deal HMRS from the deck grid, and read a player by their discards",
-      "body": "Ports the Hold'em deck grid: click a card to deal it into the highlighted\nslot, click it again to take it back, and the table recalculates itself.\nFive card hands and a ten card board will not fit the ring, so seats lay\nout as a grid that reflows on its own, with the four streets standing off\nfrom one another on the board.\n\nA hand no longer has to be whole. Whatever hands and discards leave\nunnamed is dealt at random each trial, out of the cards that could still\nbe hidden -- anything the board has matched would be lying face up, so it\nis never one of them. That makes a player you can only read by their\ndiscards a player like any other, which is the usual state of things at a\nreal table. Those cards are drawn before the board, the only order that\nleaves both draws uniform, and profiles cache on ranks alone so the\nrepeated deals cost a lookup rather than a rebuild.\n\nSeats go in once they hold five cards or once anything of theirs is face\nup, and a burst of clicks now settles before asking, so dealing a hand\ncosts one run rather than one per card."
+      "subject": "Deal HMRS from the deck grid, and read a player by their discards"
     },
     {
       "hash": "9b7adbb",
       "date": "2026-08-31",
-      "subject": "Add an HMRS equity solver",
-      "body": "Five card hands, ten community cards turned four/three/two/one, and a\ndiscard every time a community rank matches. Nothing reads a suit, so the\nengine runs on 13 bit rank masks and each hand precomputes its surviving\nsubmasks -- survival is one AND and one dict lookup, and scoring is a sum\nrather than a five card evaluator.\n\nThe exact engine walks only live ranks, the ones somebody holds; every\nother rank is interchangeable filler that is counted but never named, so\na memo state is just the remaining count per live rank and the board\nfalls out of it. Everything from the opening four cards onward is exact\nand instant, and auto falls back to sampling for the deal itself.\n\nBoth engines settle through one resolve(), checked against a brute force\nwalk over real cards and against a separate plodding implementation over\n4,000 random boards."
+      "subject": "Add an HMRS equity solver"
     },
     {
       "hash": "e8656b4",
       "date": "2026-08-31",
-      "subject": "Fall back to the list when the window is short, not just narrow",
-      "body": "The ring needs room in both directions, so the breakpoint that dropped it\nto a list now watches height as well: under 701px there is not enough\ncolumn left for three rows of seats worth reading.\n\nPin the column beside the deck to the width of the longest line it can\never hold, a seven digit runout count, so a shorter count cannot resize\nthe deck next to it. In list format that sizer stands down and both the\ndeck and the column take the full width."
+      "subject": "Fall back to the list when the window is short, not just narrow"
     },
     {
       "hash": "5d66cdc",
       "date": "2026-08-31",
-      "subject": "Give every seat its own cell so results cannot collide",
-      "body": "Seats were positioned on an ellipse and centred on their ring point, so\ntheir boxes grew both ways as results filled in and adjacent seats ran\ninto each other and into the board. Eight tall boxes do not fit on a ring\nthat has to stay inside the window, so the geometry could not be tuned\nout of the problem.\n\nThe table is a three by three grid now: the board and felt take the\nmiddle cell and the seats ring it clockwise from the top, one to a cell.\nCells cannot overlap, so seats cannot either, whatever the results say.\nEach seat carries a border and its own background to read as a box.\n\nFalling out of that, the seat layer is display: contents and no longer a\nfull size box over the board, so the pointer-events workaround that let\nboard clicks through is gone with it.\n\nMade hands read as Two pair rather than two pair."
+      "subject": "Give every seat its own cell so results cannot collide"
     },
     {
       "hash": "2523b67",
       "date": "2026-08-31",
-      "subject": "Strip the table down and let clicks reach the board",
-      "body": "The seat layer covers the whole table, so it was swallowing every click\naimed at the community cards underneath and they could not be taken back.\nIt no longer takes pointer events; the seats themselves still do.\n\nBoard labels give way to a gap that sets the turn and the river off from\nthe flop, and the stacked layout gets a little air above it. The deck\nhint is gone, Clear and the runout line move into a column beside the\ndeck, and a slot no longer shows a caret it cannot use.\n\nEquity now reads as Win and Tie on their own lines, and the server\nenumerates every runout by default rather than sampling."
+      "subject": "Strip the table down and let clicks reach the board"
     },
     {
       "hash": "af27918",
       "date": "2026-08-31",
-      "subject": "Seat 1 at the top, and solve as the cards land",
-      "body": "Rotate the ring so hand 1 sits at twelve o'clock and the rest run\nclockwise from it.\n\nDrop the Calculate button and the accuracy picker. Every card change now\nre-solves once two hands are complete, and the request leaves trials and\nmode off so the server's own defaults apply, which is what the picker\nselected anyway. A half dealt table is the normal state on this path, so\nit waits quietly instead of reporting incomplete input as an error.\n\nAnswers can arrive out of order once cards land faster than the server\nreplies, so each run takes a ticket and stale replies are dropped."
+      "subject": "Seat 1 at the top, and solve as the cards land"
     },
     {
       "hash": "83e73b7",
       "date": "2026-08-31",
-      "subject": "Deal by click only, and keep the table inside the window",
-      "body": "Card slots are read only now: cards arrive from the deck, and clicking a\nslot that holds one sends that card back to the deck and leaves the slot\narmed for the next pick. That drops the typing and paste-chaining code.\n\nThe ring layout takes its size from the height the column has left over,\nso the 6:5 table always fits without scrolling, and the seats are sized\nin container units so they shrink with it instead of colliding.\n\nAlso drops the deck heading and the board area's top and bottom padding,\nand removes the Railway section from the readme."
+      "subject": "Deal by click only, and keep the table inside the window"
     },
     {
       "hash": "4b8c2a9",
       "date": "2026-08-31",
-      "subject": "Serve the solver at /holdem and tighten the layout",
-      "body": "Move the static mount and both API routes under a /holdem prefix so the\nbare domain is free for other things, and redirect / there for now. The\nRailway healthcheck path follows the route.\n\nLayout: drop the instruction paragraph, lift the deck and the controls\nabove the table, switch to Helvetica, and scale the chrome to 80%. Hand\nseats keep their old size so the hole cards and equity stay readable.\nStatus line now reads \"N runouts in N seconds\"."
+      "subject": "Serve the solver at /holdem and tighten the layout"
     },
     {
       "hash": "8bd4f4c",
       "date": "2026-08-31",
-      "subject": "Fall back to port 8080 when PORT is unset",
-      "body": "An unset PORT left a bare trailing --port on the uvicorn command, which\nexits with an error and crash-loops the service. Default to 8080, the\nport the Railway domain routes to."
+      "subject": "Fall back to port 8080 when PORT is unset"
     },
     {
       "hash": "2067b4f",
       "date": "2026-08-31",
-      "subject": "Deal hands from a card grid around a round table",
-      "body": "The page now seats the eight hands on a ring with the board in the middle,\nand puts a 52 card deck below it. Clicking a card deals it into the\nhighlighted slot and moves on to the next empty one, in dealing order:\nhand 1, hand 2, flop, turn, river, then hands 3-8. Clicking a card that is\nalready out on the table takes it back off.\n\nHand 1's first slot starts selected so the first click has somewhere to go,\nand focusing any slot re-aims the deck at it. Typing still works and follows\nthe same order, because the input list is built in dealing order and doubles\nas the fill order. Each seat carries its own equity, bar and made hand;\nbelow 940px the ring falls back to the board on top with the hands stacked\nunderneath, since the seats need the width.\n\nDrops the \"fill in at least two\" hint. Calculate still says so if you try."
+      "subject": "Deal hands from a card grid around a round table"
     },
     {
       "hash": "49b6a78",
       "date": "2026-08-31",
-      "subject": "Move the project readme back up to the repository root",
-      "body": "The readme covers the repository as a whole, not PLO8 in particular, so it\nbelongs beside the game folders rather than inside one of them. Contents are\nunchanged; this is a pure rename."
+      "subject": "Move the project readme back up to the repository root"
     },
     {
       "hash": "c06aa42",
       "date": "2026-08-30",
-      "subject": "Reorganize PLO8 into a self-contained project folder",
-      "body": "Moves the solution, project and sources down a level so PLO8 sits beside\nHold 'em as a self-contained game folder:\n\n  PLO8.sln          -> PLO8/PLO8.sln\n  PLO8/PLO8.csproj  -> PLO8/PLO8/PLO8.csproj\n  PLO8/Class1.cs    -> PLO8/PLO8/Class1.cs\n  README.md         -> PLO8/README.md\n\nThe solution's relative reference to PLO8\\PLO8.csproj still resolves after\nthe move. Class1.cs brings along debug changes that were sitting uncommitted\nin the working tree: a high-to-low deck fill, nine card deals, reordered\nsuits, and short rank names.\n\nAlso ignores Claude Code's scratch worktrees under Hold 'em/.claude, since\nthose are a second checkout of this repository rather than project files."
+      "subject": "Reorganize PLO8 into a self-contained project folder"
     },
     {
       "hash": "1d183b2",
       "date": "2026-08-30",
-      "subject": "Add Texas Hold'em equity solver",
-      "body": "A pure-stdlib engine with a command line tool and a FastAPI web app on top.\nTakes up to eight two-card hands and up to five community cards, and reports\neach hand's win, tie and overall pot share.\n\nRunouts are enumerated exactly from the flop onward (990 boards on the flop,\n44 on the turn), so those answers carry no sampling error. Preflop would be\nmillions of boards, so it samples by default, with an exact mode available.\n\nEvaluation gives every card a precomputed constant; summing them yields one\ninteger carrying a count for each rank and each suit. A shared board is summed\nonce and each player's hole cards are added on top, which keeps an eight-way\npreflop simulation under a second in pure Python. A hand's score is a single\nint, so comparing hands is > and a chop is ==.\n\nThe fast evaluator is checked hand for hand against a deliberately naive one\nwritten separately in the test file, alongside known equities and the usual\nedge cases (the wheel, best five of seven, chops, duplicate cards).\n\nDeploys to Railway as a Nixpacks Python service with the root directory set\nto this folder."
+      "subject": "Add Texas Hold'em equity solver"
     },
     {
       "hash": "79510bf",
       "date": "2025-07-18",
-      "subject": "Update README.md",
-      "body": ""
+      "subject": "Update README.md"
     },
     {
       "hash": "fe052ef",
       "date": "2025-07-18",
-      "subject": "Update README.md",
-      "body": ""
+      "subject": "Update README.md"
     },
     {
       "hash": "039cdd3",
       "date": "2025-07-18",
-      "subject": "Update README.md",
-      "body": ""
+      "subject": "Update README.md"
     },
     {
       "hash": "1433c2f",
       "date": "2025-07-18",
-      "subject": "Update README.md",
-      "body": ""
+      "subject": "Update README.md"
     },
     {
       "hash": "9d55c77",
       "date": "2025-07-18",
-      "subject": "Adding debug options and files",
-      "body": ""
+      "subject": "Adding debug options and files"
     },
     {
       "hash": "c5e9be0",
       "date": "2025-07-18",
-      "subject": "Adding debug files",
-      "body": ""
+      "subject": "Adding debug files"
     },
     {
       "hash": "b2a6776",
       "date": "2025-07-18",
-      "subject": "Copying some useful features from Baccarat",
-      "body": ""
+      "subject": "Copying some useful features from Baccarat"
     },
     {
       "hash": "d80e50c",
       "date": "2025-07-18",
-      "subject": "Update README.md",
-      "body": ""
+      "subject": "Update README.md"
     },
     {
       "hash": "ed5c15f",
       "date": "2025-07-18",
-      "subject": "Update README.md",
-      "body": ""
+      "subject": "Update README.md"
     },
     {
       "hash": "3183c2b",
       "date": "2025-07-18",
-      "subject": "Update README.md",
-      "body": ""
+      "subject": "Update README.md"
     },
     {
       "hash": "e346037",
       "date": "2025-07-18",
-      "subject": "Update README.md",
-      "body": ""
+      "subject": "Update README.md"
     },
     {
       "hash": "ce00be2",
       "date": "2025-07-18",
-      "subject": "Update README.md",
-      "body": ""
+      "subject": "Update README.md"
     },
     {
       "hash": "ab49b8f",
       "date": "2025-07-18",
-      "subject": "Initial commit",
-      "body": ""
+      "subject": "Initial commit"
     }
   ]
 }

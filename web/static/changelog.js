@@ -1,8 +1,9 @@
 "use strict";
 
-/* The changelog is the git log of the solvers repository. It comes in as a
-   flat list of commits, and gets grouped here by month before it is drawn --
-   the commit messages themselves are already written to be read this way. */
+/* The changelog is the git log of the solvers repository. Every commit subject
+   is already written as one sentence saying what changed, so the subject is the
+   whole entry here. They arrive as a flat list and are grouped by month, and
+   then by day, so a day states its date once however much landed on it. */
 
 const MONTH_NAMES = [
   "January", "February", "March", "April", "May", "June",
@@ -22,20 +23,21 @@ async function load() {
     return;
   }
 
-  const groups = new Map();
+  // month -> day -> everything summarised that day, newest first throughout
+  const months = new Map();
   for (const entry of data.entries) {
-    const key = entry.date.slice(0, 7);
-    if (!groups.has(key)) groups.set(key, []);
-    groups.get(key).push(entry);
+    const month = entry.date.slice(0, 7);
+    if (!months.has(month)) months.set(month, new Map());
+    const days = months.get(month);
+    if (!days.has(entry.date)) days.set(entry.date, []);
+    days.get(entry.date).push(entry);
   }
 
-  for (const [key, entries] of groups) {
-    feed.appendChild(monthSection(key, entries));
-  }
+  for (const [month, days] of months) feed.appendChild(monthSection(month, days));
   status.hidden = true;
 }
 
-function monthSection(key, entries) {
+function monthSection(key, days) {
   const section = document.createElement("section");
   section.className = "group";
 
@@ -45,8 +47,8 @@ function monthSection(key, entries) {
   section.appendChild(title);
 
   const list = document.createElement("div");
-  list.className = "entries";
-  for (const entry of entries) list.appendChild(entryElement(entry));
+  list.className = "days";
+  for (const [date, entries] of days) list.appendChild(daySection(date, entries));
   section.appendChild(list);
   return section;
 }
@@ -56,30 +58,25 @@ function readableMonth(key) {
   return MONTH_NAMES[parseInt(month, 10) - 1] + " " + year;
 }
 
-function entryElement(entry) {
-  const wrap = document.createElement("article");
-  wrap.className = "entry";
+// One day's work: the date said once, its summaries listed beside it.
+function daySection(date, entries) {
+  const wrap = document.createElement("section");
+  wrap.className = "day";
 
-  const date = document.createElement("div");
-  date.className = "entry-date";
-  const [, month, day] = entry.date.split("-");
-  date.textContent = MONTH_NAMES[parseInt(month, 10) - 1].slice(0, 3) + " " + day;
-  wrap.appendChild(date);
+  const label = document.createElement("h3");
+  label.className = "day-date";
+  const [, month, day] = date.split("-");
+  label.textContent = MONTH_NAMES[parseInt(month, 10) - 1].slice(0, 3) + " " + day;
+  wrap.appendChild(label);
 
-  const body = document.createElement("div");
-  body.className = "entry-body";
-
-  const head = document.createElement("h3");
-  head.textContent = entry.subject;
-  body.appendChild(head);
-
-  if (entry.body) {
-    const paragraph = document.createElement("p");
-    paragraph.textContent = entry.body;
-    body.appendChild(paragraph);
+  const list = document.createElement("ul");
+  list.className = "summaries";
+  for (const entry of entries) {
+    const item = document.createElement("li");
+    item.textContent = entry.subject;
+    list.appendChild(item);
   }
-
-  wrap.appendChild(body);
+  wrap.appendChild(list);
   return wrap;
 }
 

@@ -6,7 +6,9 @@ Run once, from anywhere::
 
 The script walks the Poker-Solvers repo next to this one (../Poker-Solvers by
 default, overridable) and writes ``web/static/changelog.json`` with one entry
-per commit: hash, date, subject and body. The page groups by month at load.
+per commit: hash, date and subject. The subject is the one sentence summary
+the page shows; the body is deliberately left behind. The page groups by
+month and then by day at load.
 """
 
 import json
@@ -21,17 +23,16 @@ DEFAULT_REPO = HERE.parent / "Poker-Solvers"
 
 
 def commits(repo):
-    """Every commit on main, most recent first, as ``(hash, date, subject, body)``.
+    """Every commit on main, most recent first, as ``(hash, date, subject)``.
 
     A record separator no author would ever type is used to split fields, so
-    a multi-paragraph body with tabs and newlines survives intact.
+    a subject carrying anything unusual survives intact.
     """
-    # Private Use Area codepoints no author will type. \x1e and \x1f would work
-    # too but Python's str.strip treats them as whitespace, so a commit with an
-    # empty body would lose its trailing delimiter and read as three fields.
+    # Private Use Area codepoints no author will type, so a subject may hold
+    # anything at all without breaking the record it belongs to.
     sep = "\uE000"
     end = "\uE001"
-    fmt = sep.join(["%h", "%ad", "%s", "%b"]) + end
+    fmt = sep.join(["%h", "%ad", "%s"]) + end
     raw = subprocess.check_output(
         ["git", "log", "--no-merges", "--pretty=format:" + fmt, "--date=short"],
         cwd=str(repo), encoding="utf-8",
@@ -41,14 +42,13 @@ def commits(repo):
         if not chunk:
             continue
         parts = chunk.split(sep)
-        if len(parts) != 4:
+        if len(parts) != 3:
             continue
-        h, date, subject, body = parts
+        h, date, subject = parts
         yield {
             "hash": h,
             "date": date,
             "subject": subject.strip(),
-            "body": body.strip(),
         }
 
 

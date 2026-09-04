@@ -1,6 +1,6 @@
-/* A stream of commits, grouped by month. The subject reads as the headline
-   and the body sits under it as one flowing paragraph -- the commit messages
-   are already written in that shape. */
+/* A stream of one line summaries, grouped by month and then by day. A day
+   gives its date once in the left column and lists what landed on it in the
+   right, so a busy day reads as one block rather than a repeated date. */
 
 main { max-width: 720px; }
 
@@ -25,43 +25,35 @@ header { display: flex; justify-content: space-between; align-items: baseline; }
   border-bottom: 1px solid var(--line);
 }
 
-.entries { display: flex; flex-direction: column; gap: 20px; }
+.days { display: flex; flex-direction: column; gap: 18px; }
 
-.entry {
+.day {
   display: grid;
   grid-template-columns: 60px 1fr;
   gap: 14px;
 }
-.entry-date {
-  color: var(--muted);
-  font-size: 11px;
-  font-variant-numeric: tabular-nums;
-  padding-top: 3px;
-}
-.entry-body h3 {
-  margin: 0 0 4px;
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-}
-.entry-body p {
+.day-date {
   margin: 0;
   color: var(--muted);
-  font-size: 12px;
-  line-height: 1.55;
-  white-space: pre-wrap;   /* commit messages already carry their own linebreaks */
-}
-.entry-body code {
-  background: var(--panel-2);
-  padding: 1px 4px;
-  border-radius: 3px;
-  font-family: ui-monospace, "SF Mono", Consolas, monospace;
   font-size: 11px;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  padding-top: 2px;
 }
+
+.summaries {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.summaries li { font-size: 13px; line-height: 1.5; }
 
 .status { color: var(--muted); font-size: 11px; text-align: center; margin: 20px 0; }
 
 @media (max-width: 500px) {
-  .entry { grid-template-columns: 1fr; gap: 4px; }
-  .entry-date { padding-top: 0; }
+  .day { grid-template-columns: 1fr; gap: 5px; }
+  .day-date { padding-top: 0; }
 }
