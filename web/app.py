@@ -3,7 +3,7 @@
 Serves the landing page from ``web/static`` and stands in front of the two
 solvers, which run as their own services. Railway points one domain at one
 service, so anything else sharing that domain has to be forwarded by hand:
-a request under ``/holdem`` or ``/hmrds`` is replayed against the matching
+a request under ``/holdem`` or ``/prlps`` is replayed against the matching
 service and its answer handed straight back. Both solvers already mount
 themselves under exactly those prefixes, so the path a browser asks for is
 the path the upstream is asked for -- nothing is rewritten in between.
@@ -28,6 +28,7 @@ UPSTREAMS = {
     "holdem": os.environ.get("HOLDEM_UPSTREAM", "").rstrip("/"),
     "hmrds": os.environ.get("HMRDS_UPSTREAM", "").rstrip("/"),
     "noah": os.environ.get("NOAH_UPSTREAM", "").rstrip("/"),
+    "prlps": os.environ.get("PRLPS_UPSTREAM", "").rstrip("/"),
     "redriver": os.environ.get("REDRIVER_UPSTREAM", "").rstrip("/"),
 }
 

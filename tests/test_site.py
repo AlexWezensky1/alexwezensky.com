@@ -127,7 +127,7 @@ class LandingPage(ProxyCase):
 
     def test_index_links_to_every_solver(self):
         body = self.client.get("/").text
-        for prefix in ("holdem", "noah", "redriver", "hmrds"):
+        for prefix in ("holdem", "noah", "redriver", "hmrds", "prlps"):
             self.assertIn('href="/%s/"' % prefix, body)
 
     def test_static_assets_are_served(self):
@@ -142,8 +142,8 @@ class LandingPage(ProxyCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["status"], "ok")
         self.assertEqual(response.json()["upstreams"],
-                         {"holdem": True, "hmrds": True,
-                          "noah": False, "redriver": False})
+                         {"holdem": True, "hmrds": True, "noah": False,
+                          "prlps": False, "redriver": False})
 
     def test_an_unknown_path_is_not_swallowed_by_the_proxy(self):
         self.assertEqual(self.client.get("/nope").status_code, 404)
