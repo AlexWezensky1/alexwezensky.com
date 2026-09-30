@@ -1,4 +1,4 @@
-"""FastAPI front end for alexwezensky.com.
+"""FastAPI front end for mixedgamesgto.com.
 
 Serves the landing page from ``web/static`` and stands in front of the two
 solvers, which run as their own services. Railway points one domain at one
@@ -16,7 +16,7 @@ from urllib.parse import urlsplit, urlunsplit
 
 import httpx
 from fastapi import FastAPI, Request
-from fastapi.responses import FileResponse, JSONResponse, Response
+from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 
 STATIC_DIR = Path(__file__).resolve().parent / "static"
@@ -31,6 +31,18 @@ UPSTREAMS = {
     "prlps": os.environ.get("PRLPS_UPSTREAM", "").rstrip("/"),
     "redriver": os.environ.get("REDRIVER_UPSTREAM", "").rstrip("/"),
 }
+
+#: Where the site lives. Unset, every host is served as it stands; set, any
+#: host in MOVED_HOSTS is sent there instead, path and query intact. Left to
+#: the environment so the old domain keeps working until the new one does.
+CANONICAL_HOST = os.environ.get("CANONICAL_HOST", "").strip().lower()
+
+#: Hosts the site has been served from and should now leave for the canonical
+#: one. Only these move: Railway's own addresses and its health check keep
+#: answering where they are asked.
+MOVED_HOSTS = frozenset({
+    "alexwezensky.com", "www.alexwezensky.com", "www.mixedgamesgto.com",
+})
 
 METHODS = ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
 
@@ -56,8 +68,24 @@ async def lifespan(app: FastAPI):
         yield
 
 
-app = FastAPI(title="alexwezensky.com", docs_url=None, redoc_url=None,
+app = FastAPI(title="mixedgamesgto.com", docs_url=None, redoc_url=None,
               lifespan=lifespan)
+
+
+@app.middleware("http")
+async def move_to_canonical(request: Request, call_next):
+    """Send the old domain on to the new one, to the same page.
+
+    308 rather than 301 so a solve POSTed to the old address is replayed as a
+    POST, and permanent so search engines carry the old links over.
+    """
+    host = request.headers.get("host", "").split(":")[0].lower()
+    if CANONICAL_HOST and host in MOVED_HOSTS and host != CANONICAL_HOST:
+        target = "https://" + CANONICAL_HOST + request.url.path
+        if request.url.query:
+            target += "?" + request.url.query
+        return RedirectResponse(target, status_code=308)
+    return await call_next(request)
 
 
 @app.get("/api/health", include_in_schema=False)

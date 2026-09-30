@@ -254,6 +254,43 @@ class RewritingRedirects(unittest.TestCase):
         self.assertEqual(local_location(other, self.target), other)
 
 
+class MovingDomains(ProxyCase):
+    def setUp(self):
+        super().setUp()
+        self.addCleanup(setattr, site, "CANONICAL_HOST", site.CANONICAL_HOST)
+        site.CANONICAL_HOST = "mixedgamesgto.com"
+
+    def get(self, path, host, method="GET"):
+        return self.client.request(method, path, headers={"host": host},
+                                   follow_redirects=False)
+
+    def test_the_old_domain_moves_to_the_same_page(self):
+        for host in ("alexwezensky.com", "www.alexwezensky.com",
+                     "www.mixedgamesgto.com"):
+            with self.subTest(host=host):
+                response = self.get("/holdem/preflopchart?x=1", host)
+                self.assertEqual(response.status_code, 308)
+                self.assertEqual(response.headers["location"],
+                                 "https://mixedgamesgto.com/holdem/preflopchart?x=1")
+
+    def test_a_post_is_moved_as_a_post(self):
+        response = self.get("/holdem/api/equity", "alexwezensky.com", "POST")
+        self.assertEqual(response.status_code, 308)
+
+    def test_the_new_domain_is_served(self):
+        response = self.get("/", "mixedgamesgto.com")
+        self.assertEqual(response.status_code, 200)
+
+    def test_other_hosts_are_served_where_they_are(self):
+        response = self.get("/api/health", "web-production.up.railway.app")
+        self.assertEqual(response.status_code, 200)
+
+    def test_nothing_moves_until_a_canonical_host_is_set(self):
+        site.CANONICAL_HOST = ""
+        response = self.get("/", "alexwezensky.com")
+        self.assertEqual(response.status_code, 200)
+
+
 class WhenAnUpstreamIsMissing(ProxyCase):
     def test_an_unreachable_solver_answers_502(self):
         response = self.client.get("/hmrds/api/health")
