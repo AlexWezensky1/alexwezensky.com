@@ -10,7 +10,9 @@ the path the upstream is asked for -- nothing is rewritten in between.
 """
 
 import os
+import re
 from contextlib import asynccontextmanager
+from html import escape
 from pathlib import Path
 from urllib.parse import urlsplit, urlunsplit
 
@@ -43,6 +45,39 @@ CANONICAL_HOST = os.environ.get("CANONICAL_HOST", "").strip().lower()
 MOVED_HOSTS = frozenset({
     "alexwezensky.com", "www.alexwezensky.com", "www.mixedgamesgto.com",
 })
+
+
+
+def analytics_snippet(env=os.environ) -> str:
+    """The tags for every analytics service configured, ready for <head>.
+
+    Each is switched on by its own variable and left out without it:
+    ``GA4_ID`` (G-XXXXXXXXXX), ``UMAMI_WEBSITE_ID`` (with ``UMAMI_SCRIPT_URL``
+    for a self-hosted Umami) and ``GOATCOUNTER_CODE`` (the part before
+    .goatcounter.com).
+    """
+    tags = []
+    ga4 = env.get("GA4_ID", "").strip()
+    if re.fullmatch(r"G-[A-Z0-9]+", ga4):
+        tags.append(
+            f'<script async src="https://www.googletagmanager.com/gtag/js?id={ga4}"></script>'
+            "<script>window.dataLayer=window.dataLayer||[];"
+            "function gtag(){dataLayer.push(arguments);}"
+            f"gtag('js',new Date());gtag('config','{ga4}');</script>")
+    umami = env.get("UMAMI_WEBSITE_ID", "").strip()
+    if umami:
+        src = env.get("UMAMI_SCRIPT_URL", "").strip() or "https://cloud.umami.is/script.js"
+        tags.append(f'<script defer src="{escape(src)}" '
+                    f'data-website-id="{escape(umami)}"></script>')
+    goat = env.get("GOATCOUNTER_CODE", "").strip()
+    if re.fullmatch(r"[a-z0-9-]+", goat):
+        tags.append(f'<script data-goatcounter="https://{goat}.goatcounter.com/count" '
+                    'async src="//gc.zgo.at/count.js"></script>')
+    return "".join(tags)
+
+
+#: Read once: the variables only change with a redeploy.
+ANALYTICS = analytics_snippet()
 
 METHODS = ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
 
@@ -86,6 +121,26 @@ async def move_to_canonical(request: Request, call_next):
             target += "?" + request.url.query
         return RedirectResponse(target, status_code=308)
     return await call_next(request)
+
+
+@app.middleware("http")
+async def add_analytics(request: Request, call_next):
+    """Put the analytics tags into every page, ours and the solvers' alike.
+
+    Everything public passes through here, so one set of variables covers all
+    of it and no solver has to know analytics exist.
+    """
+    response = await call_next(request)
+    if (not ANALYTICS or request.method != "GET" or response.status_code != 200
+            or not response.headers.get("content-type", "").startswith("text/html")):
+        return response
+    body = b"".join([chunk async for chunk in response.body_iterator])
+    body = body.replace(b"</head>", ANALYTICS.encode() + b"</head>", 1)
+    # The validators described the page before the tags went in; left on, a
+    # browser could keep a page from before the tags changed.
+    headers = {k: v for k, v in response.headers.items()
+               if k.lower() not in ("content-length", "etag", "last-modified")}
+    return Response(content=body, status_code=response.status_code, headers=headers)
 
 
 @app.get("/api/health", include_in_schema=False)

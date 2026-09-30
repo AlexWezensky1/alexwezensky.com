@@ -47,7 +47,7 @@ async def echo(request):
 
 
 async def page(request):
-    return PlainTextResponse("<!DOCTYPE html><title>upstream</title>",
+    return PlainTextResponse("<!DOCTYPE html><head><title>upstream</title></head>",
                              media_type="text/html")
 
 
@@ -289,6 +289,41 @@ class MovingDomains(ProxyCase):
         site.CANONICAL_HOST = ""
         response = self.get("/", "alexwezensky.com")
         self.assertEqual(response.status_code, 200)
+
+
+class Analytics(ProxyCase):
+    env = {"GA4_ID": "G-ABC123", "UMAMI_WEBSITE_ID": "1234-abcd",
+           "GOATCOUNTER_CODE": "mixedgames"}
+
+    def setUp(self):
+        super().setUp()
+        self.addCleanup(setattr, site, "ANALYTICS", site.ANALYTICS)
+        site.ANALYTICS = site.analytics_snippet(self.env)
+
+    def test_nothing_is_added_without_configuration(self):
+        self.assertEqual(site.analytics_snippet({}), "")
+
+    def test_a_malformed_id_is_left_out(self):
+        self.assertEqual(site.analytics_snippet({"GA4_ID": "');alert(1)//"}), "")
+
+    def test_our_pages_carry_all_three(self):
+        for path in ("/", "/changelog"):
+            with self.subTest(path=path):
+                body = self.client.get(path).text
+                head = body.split("</head>")[0]
+                self.assertIn("gtag/js?id=G-ABC123", head)
+                self.assertIn('data-website-id="1234-abcd"', head)
+                self.assertIn("https://mixedgames.goatcounter.com/count", head)
+
+    def test_a_solver_page_carries_them_through_the_proxy(self):
+        response = self.client.get("/holdem/")
+        self.assertIn("G-ABC123", response.text)
+        self.assertEqual(int(response.headers["content-length"]),
+                         len(response.content))
+
+    def test_json_and_assets_are_untouched(self):
+        self.assertNotIn("gtag", self.client.get("/holdem/api/echo").text)
+        self.assertNotIn("gtag", self.client.get("/style.css").text)
 
 
 class WhenAnUpstreamIsMissing(ProxyCase):
