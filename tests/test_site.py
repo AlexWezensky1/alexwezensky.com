@@ -306,6 +306,14 @@ class Analytics(ProxyCase):
     def test_a_malformed_id_is_left_out(self):
         self.assertEqual(site.analytics_snippet({"GA4_ID": "');alert(1)//"}), "")
 
+    def test_goatcounter_is_taken_in_any_shape(self):
+        for code in ("mixedgames", "MixedGames", "mixedgames.goatcounter.com",
+                     "https://mixedgames.goatcounter.com/",
+                     "https://mixedgames.goatcounter.com/count"):
+            with self.subTest(code=code):
+                self.assertIn("https://mixedgames.goatcounter.com/count",
+                              site.analytics_snippet({"GOATCOUNTER_CODE": code}))
+
     def test_our_pages_carry_all_three(self):
         for path in ("/", "/changelog"):
             with self.subTest(path=path):

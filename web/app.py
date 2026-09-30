@@ -69,7 +69,9 @@ def analytics_snippet(env=os.environ) -> str:
         src = env.get("UMAMI_SCRIPT_URL", "").strip() or "https://cloud.umami.is/script.js"
         tags.append(f'<script defer src="{escape(src)}" '
                     f'data-website-id="{escape(umami)}"></script>')
-    goat = env.get("GOATCOUNTER_CODE", "").strip()
+    # Taken however GoatCounter shows it: the code, its host, or its full URL.
+    goat = env.get("GOATCOUNTER_CODE", "").strip().lower()
+    goat = re.sub(r"^https?://", "", goat).split("/")[0].removesuffix(".goatcounter.com")
     if re.fullmatch(r"[a-z0-9-]+", goat):
         tags.append(f'<script data-goatcounter="https://{goat}.goatcounter.com/count" '
                     'async src="//gc.zgo.at/count.js"></script>')
