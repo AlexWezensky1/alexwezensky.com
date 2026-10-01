@@ -285,6 +285,19 @@ class MovingDomains(ProxyCase):
         response = self.get("/api/health", "web-production.up.railway.app")
         self.assertEqual(response.status_code, 200)
 
+    def test_the_old_domain_root_is_the_home_page(self):
+        for host in ("alexwezensky.com", "www.alexwezensky.com"):
+            with self.subTest(host=host):
+                response = self.get("/", host)
+                self.assertEqual(response.status_code, 200)
+                self.assertIn("qlessdatabase.com", response.text)
+                self.assertIn("mixedgamesgto.com", response.text)
+
+    def test_the_new_domain_root_is_still_the_solvers(self):
+        response = self.get("/", "mixedgamesgto.com")
+        self.assertIn("/holdem/", response.text)
+        self.assertNotIn("qlessdatabase.com", response.text)
+
     def test_nothing_moves_until_a_canonical_host_is_set(self):
         site.CANONICAL_HOST = ""
         response = self.get("/", "alexwezensky.com")

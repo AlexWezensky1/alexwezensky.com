@@ -22,6 +22,7 @@ from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, Resp
 from fastapi.staticfiles import StaticFiles
 
 STATIC_DIR = Path(__file__).resolve().parent / "static"
+HOME_PAGE = Path(__file__).resolve().parent / "home" / "index.html"
 
 #: Path prefix -> base URL of the service that owns it, e.g.
 #: ``https://holdem-production.up.railway.app``. A prefix left unset still
@@ -45,6 +46,11 @@ CANONICAL_HOST = os.environ.get("CANONICAL_HOST", "").strip().lower()
 MOVED_HOSTS = frozenset({
     "alexwezensky.com", "www.alexwezensky.com", "www.mixedgamesgto.com",
 })
+
+#: Hosts whose front page is the personal home page rather than a redirect.
+#: Only the root stays; every other path still moves, so old solver links
+#: on the old domain keep landing where they used to.
+HOME_HOSTS = frozenset({"alexwezensky.com", "www.alexwezensky.com"})
 
 
 
@@ -117,6 +123,8 @@ async def move_to_canonical(request: Request, call_next):
     POST, and permanent so search engines carry the old links over.
     """
     host = request.headers.get("host", "").split(":")[0].lower()
+    if host in HOME_HOSTS and request.url.path == "/" and request.method in ("GET", "HEAD"):
+        return FileResponse(HOME_PAGE)
     if CANONICAL_HOST and host in MOVED_HOSTS and host != CANONICAL_HOST:
         target = "https://" + CANONICAL_HOST + request.url.path
         if request.url.query:

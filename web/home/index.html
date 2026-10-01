@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alex Wezensky</title>
+<meta name="description" content="Websites built by Alex Wezensky.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #efeae0;
+    --ink: #16150f;
+    --rule: #16150f;
+    --shade: rgba(12, 12, 10, 0.58);
+    --shade-hover: rgba(12, 12, 10, 0.4);
+    --on-photo: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #16150f;
+      --ink: #efeae0;
+      --rule: #efeae0;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #16150f;
+    --ink: #efeae0;
+    --rule: #efeae0;
+  }
+
+  * { box-sizing: border-box; border-radius: 0; }
+  html, body { margin: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Archivo", "Helvetica Neue", Arial, sans-serif;
+    font-size: 18px;
+    line-height: 1.45;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    min-height: 100vh;
+  }
+
+  .cell {
+    position: relative;
+    min-height: 50vh;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  .intro {
+    justify-content: space-between;
+  }
+  .intro h1 {
+    margin: 0;
+    font-size: clamp(48px, 8vw, 112px);
+    font-weight: 800;
+    line-height: 0.92;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+  }
+  .intro p {
+    margin: 32px 0 0;
+    max-width: 30em;
+  }
+
+  .project {
+    color: var(--on-photo);
+    text-decoration: none;
+    background-color: #333;
+    background-size: cover;
+    background-position: center;
+    isolation: isolate;
+  }
+  .project::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--shade);
+    transition: background 0.2s;
+    z-index: -1;
+  }
+  .project:hover::before,
+  .project:focus-visible::before { background: var(--shade-hover); }
+  .project:focus-visible { outline: 4px solid #f4c20d; outline-offset: -4px; }
+
+  .project h2 {
+    margin: 0;
+    font-size: clamp(30px, 3.6vw, 48px);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .project .url {
+    align-self: flex-start;
+    margin-top: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    border-bottom: 2px solid currentColor;
+  }
+  .project p {
+    margin: 18px 0 0;
+    max-width: 28em;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  }
+
+  .qless {
+    background-image: url("https://images.unsplash.com/photo-1705484229078-e48b8a1bbbc9?auto=format&fit=crop&w=1600&q=70");
+  }
+  .borderhop {
+    background-image: url("https://images.unsplash.com/photo-1622449589142-7757caf37fb9?auto=format&fit=crop&w=1600&h=1100&q=70");
+  }
+  .mixedgames {
+    background-image: url("https://images.unsplash.com/photo-1670251400844-26c200b75a0f?auto=format&fit=crop&w=1600&q=70");
+  }
+
+  footer {
+    padding: 16px 40px;
+    font-size: 13px;
+    border-top: 3px solid var(--rule);
+  }
+  footer a { color: inherit; }
+
+  @media (max-width: 760px) {
+    .grid { grid-template-columns: 1fr; }
+    .cell { min-height: 60vh; padding: 28px 16px; }
+    .intro { min-height: auto; gap: 48px; }
+    footer { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+<main class="grid">
+  <section class="cell intro">
+    <h1>Alex<br>Wezensky</h1>
+    <p>I make websites about games, puzzles, and maps.</p>
+  </section>
+
+  <a class="cell project qless" href="https://qlessdatabase.com">
+    <h2>Q-Less Almanac</h2>
+    <span class="url">qlessdatabase.com</span>
+    <p>This site solves any roll in the word game Q-Less and gives you a new puzzle to try every day.</p>
+  </a>
+
+  <a class="cell project borderhop" href="https://borderhop.app">
+    <h2>BorderHop</h2>
+    <span class="url">borderhop.app</span>
+    <p>This map shows how many borders you have to cross to get from one state or country to any other.</p>
+  </a>
+
+  <a class="cell project mixedgames" href="https://mixedgamesgto.com">
+    <h2>Mixed Games GTO</h2>
+    <span class="url">mixedgamesgto.com</span>
+    <p>These poker calculators show each player's chance of winning a hand in Hold'em and four other games.</p>
+  </a>
+</main>
+<footer>
+  Photos from Unsplash by
+  <a href="https://unsplash.com/photos/5aiCc8n6tIE">Markus Winkler</a>,
+  <a href="https://unsplash.com/photos/hAJhORQHk94">Hans</a>, and
+  <a href="https://unsplash.com/photos/VKtjnYXhzGA">David Trinks</a>.
+</footer>
+</body>
+</html>
